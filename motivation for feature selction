@@ -1,0 +1,17 @@
+Feature selection has preliminarily been aided by a concept called Mutual Information (https://en.wikipedia.org/wiki/Mutual_information) and the ennemi package in python, which estimates mutual information for variables.
+Mutual information basically means how much we can learn about the value of one variable by studing the value of another, and fulfills a similar role to checking the pearson correlation of two variables. However, mutual information is a much more general concept and is useful particularly in cases where variables don't have linear dependencies [1].
+We calculated the mutual information (MI) between the class variable and the feature variables, and selected the variables that have the highest MI with the class variable.
+However, only 1 variable was used from each distinct "category" of variable (radiation, humidity, temperature, different gas concetrations).
+Duplicate features that are essentially the same thing (different types of radiation, similar ways of measuring humidity, measurements made at different altitudes of the same quantity) were skipepd.
+This way, we avoid having features that are very correlated with each other, and persumably we will have a model with good performance and lower chance of overfitting.
+
+References:
+[1] Laarne, P., Amnell, E., Zaidan, M. A., Mikkonen, S., & Nieminen, T. (2022). Exploring Non-Linear Dependencies in Atmospheric Data with Mutual Information. Atmosphere, 13(7), [1046]. https://doi.org/10.3390/atmos13071046
+
+CODE:
+train = pd.read_csv("npf_train.csv")
+test = pd.read_csv("npf_test_hidden.csv")
+class2 = np.array(["nonevent", "event"])
+train["class2"] = (train["class4"]!="nonevent").astype(int)
+features=train.drop(columns=["id","date","class4","partlybad"]).dropna()
+mi=en.pairwise_mi(features,normalize=True)
